@@ -8,7 +8,7 @@
 var charsPerBlock = 32; // 128 bits key = 32 chars * 4 bits per hex
 
 var AESCBC_Encrypt = function (key, PT) {
-    // CBC = Cipher Block Chaining
+        // CBC = Cipher Block Chaining
     var CT = "", round, block, numBlocks, needPadding, hex = "", keyArray = [];
 
     console.log("AES-128 encryption");
@@ -34,11 +34,8 @@ var AESCBC_Encrypt = function (key, PT) {
         // to be done
     }
 
-    // Convert key to array of integers
-    keyArray = hexToIntArray(key);
-
     // Key expansion from 16 bytes to 11 * 16 = 176 bytes
-    keyArray = expandKey(keyArray);
+    keyArray = expandKey(key);
     console.log(keyArray);
 
     // For each block in the PT
@@ -101,8 +98,8 @@ var AESCTR_Decrypt = function (key, CT) {
     return PT;
 };
 
-//var q1CBCKey = "140b41b22a29beb4061bda66b6747e14"; // 32 chars * 4 bits = 128 bits key
-var q1CBCKey = "00000000000000000000000000000000"; // 32 chars * 4 bits = 128 bits key
+var q1CBCKey = "140b41b22a29beb4061bda66b6747e14"; // 32 chars * 4 bits = 128 bits key
+//var q1CBCKey = "00000000000000000000000000000000"; // 32 chars * 4 bits = 128 bits key
 //var q1CBCKey = "ffffffffffffffffffffffffffffffff"; // 32 chars * 4 bits = 128 bits key
 var q1CBCCT  = "4ca00ff4c898d61e1edbf1800618fb2828a226d160dad07883d04e008a7897ee2e4b7465d5290d0c0e6c6822236e1daafb94ffe0c5da05d9476be028ad7c1d81";
 
