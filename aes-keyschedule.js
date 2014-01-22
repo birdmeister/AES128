@@ -1,14 +1,12 @@
 // Key schedule, see http://www.samiam.org/key-schedule.html
+// Verified on 22-jan-2014
 
-var expandKey = function (hex) {
-    var key, c, rcon, t = [], i;
-
-    // Convert key to array of integers
-    key = hexToIntArray(hex);
+var expandKey = function (key) {
+    var c, rcon, t = [], i;
 
     // Start with 1 key of 16 bytes and expand to 11 keys of 16 bytes (= 176 bytes)
     if (key.length != 16) {
-        console.log("Cannot expand key. Only " + key.length + " chars.");
+        console.log("Key is not 128 bytes, but " + key.length * 8 + "bytes. Required for AES-128.");
         return key;
     }
 
@@ -43,19 +41,24 @@ var expandKey = function (hex) {
         }
     }
 
-    var temp = intToHexArray(key);
-    for (i = 0; i <= 16; i++) {
-        if (i < 10) {
-            console.log("Key0" + i + " = " + temp.substr(32*i, 32));
-        } else {
-            console.log("Key" + i + " = " + temp.substr(32*i, 32));
-        }
-    }
-
     if (key.length != 176) {
         console.log("Error in expandKey()");
     }
 
-    return t;
+    return key;
+};
+
+var getKey = function (keyArray, round) {
+    var key = [], i;
+
+    if (keyArray.length != 11 * 16) {
+        console.log("Wrong number of key. Expected 16 keys, " + keyArray.length / 16 + " counted.");
+        return key;
+    }
+
+    for (i = 0; i < 16; i++) {
+        key[i] = keyArray[i + 16 * round];
+    }
+    return key;
 };
 

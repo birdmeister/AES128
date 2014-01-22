@@ -8,19 +8,13 @@
 var charsPerBlock = 32; // 128 bits key = 32 chars * 4 bits per hex
 
 var AESCBC_Encrypt = function (key, PT) {
-        // CBC = Cipher Block Chaining
-    var CT = "", round, block, numBlocks, needPadding, hex = "", keyArray = [];
+    // CBC = Cipher Block Chaining
+    var CT = "", round, block, numBlocks, needPadding, hex = "", keyArray, keyBlock = [];
 
     console.log("AES-128 encryption");
     console.log("==================");
     console.log("Key:" + key);
     console.log("PT :" + PT);
-
-    // Check the key length
-    if (key.length != charsPerBlock) {
-        console.log("Key is not 128 bytes. Required for AES-128");
-        return CT;
-    }
 
     // Determine the number of blocks
     numBlocks = Math.ceil(PT.length / charsPerBlock);
@@ -35,8 +29,8 @@ var AESCBC_Encrypt = function (key, PT) {
     }
 
     // Key expansion from 16 bytes to 11 * 16 = 176 bytes
-    keyArray = expandKey(key);
-    console.log(keyArray);
+    keyArray = hexToIntArray(key);
+    keyArray = expandKey(keyArray);
 
     // For each block in the PT
     for (block = 1; block <= numBlocks; block++) {
@@ -47,32 +41,37 @@ var AESCBC_Encrypt = function (key, PT) {
         // initial round - addRoundKey (XOR)
         hex = PT.substr((block - 1) * charsPerBlock, charsPerBlock);
         console.log("PT" + block + ":" + hex);
-        console.log("Key:" + keyArray[0]);
-        hex = addRoundKey(keyArray[0], hex);
-        console.log("Rnd:" + hex);
+
+        // get the key from the array of keys
+        keyBlock = getKey(keyArray, 0);
+
+        console.log("Key:" + intToHexArray(keyBlock));
+        hex = addRoundKey(keyBlock, hex);
+        console.log("Rnd:" + intToHexArray(hex));
 
         // AES-128 has 10 rounds
         for (round = 1; round <= 10; round++) {
             // subBytes
             hex = subBytes(hex);
-            console.log("Sub:" + hex);
+            console.log("Sub:" + intToHexArray(hex));
 
             // shiftRows
             hex = shiftRows(hex);
-            console.log("Shf:" + hex);
+            console.log("Shf:" + intToHexArray(hex));
 
             // mixColumns, expect in the 10th round
             if (round != 10) {
                 // mixColumns
                 hex = mixColumns(hex);
-                console.log("Mix:" + hex);
+                console.log("Mix:" + intToHexArray(hex));
             }
 
             // addRoundKey (XOR)
-            console.log("Key:" + keyArray[round]);
-            hex = addRoundKey(keyArray[round], hex);
+            console.log("Key:" + getKey(keyArray, round));
+            hex = addRoundKey(getKey(keyArray, round), hex);
         }
         CT += hex;
+        console.log("CT:" + CT);
     }
     return CT;
 };
@@ -99,8 +98,6 @@ var AESCTR_Decrypt = function (key, CT) {
 };
 
 var q1CBCKey = "140b41b22a29beb4061bda66b6747e14"; // 32 chars * 4 bits = 128 bits key
-//var q1CBCKey = "00000000000000000000000000000000"; // 32 chars * 4 bits = 128 bits key
-//var q1CBCKey = "ffffffffffffffffffffffffffffffff"; // 32 chars * 4 bits = 128 bits key
 var q1CBCCT  = "4ca00ff4c898d61e1edbf1800618fb2828a226d160dad07883d04e008a7897ee2e4b7465d5290d0c0e6c6822236e1daafb94ffe0c5da05d9476be028ad7c1d81";
 
 console.log(AESCBC_Encrypt(q1CBCKey, q1CBCCT)); // SHOULD BE DECRYPT EVENTUALLY
