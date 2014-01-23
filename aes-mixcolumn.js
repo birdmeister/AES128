@@ -1,5 +1,43 @@
 // Mix Column, see http://www.samiam.org/mix-column.html
-// Verified on 22-jan-2014
+// NOT Verified on 22-jan-2014
+
+var mixMatrix = function(input) {
+    var i, j, column = [], output = [];
+
+    if (input.length != 16) {
+        console.log("Cannot mix matrix. Not 16, but " + input.length/4 + " columns.");
+        return output;
+    }
+
+    for (i = 0; i < 4; i++) {
+        // Select 4 times a column
+        column = input.slice(i * 4, i * 4 + 4);
+        column = mixColumns(column);
+        for (j = 0; j < 4; j++) {
+            output.push(column[j]);
+        }
+    }
+    return output;
+};
+
+var inverseMixMatrix = function (input) {
+    var i, j, column = [], output = [];
+
+    if (input.length != 16) {
+        console.log("Cannot inverse mix matrix. Not 16, but " + input.length/4 + " columns.");
+        return output;
+    }
+
+    for (i = 0; i < 4; i++) {
+        // Select 4 times a column
+        column = input.slice(i * 4, i * 4 + 4);
+        column = inverseMixColumns(column);
+        for (j = 0; j < 4; j++) {
+            output.push(column[j]);
+        }
+    }
+    return output;
+};
 
 var mixColumns = function (input) {
     var a = [], b = [], i;
