@@ -1,4 +1,5 @@
 // Library of S-Box functions, see http://www.samiam.org/s-box.html
+// Verified on 22-jan-2014
 
 var forwardSBox = function (int) {
     var s = [
